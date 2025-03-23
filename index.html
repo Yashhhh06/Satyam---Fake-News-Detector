@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FakeNews Detector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .neubrutalism {
+            border: 3px solid black;
+            box-shadow: 5px 5px 0px black;
+            transition: all 0.2s ease;
+        }
+        .neubrutalism:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px black;
+        }
+        .loading {
+            width: 30px;
+            height: 30px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 12px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border: 2px solid black;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body class="bg-yellow-50 custom-scrollbar">
+    <!-- Navigation -->
+    <nav class="bg-white p-4 neubrutalism mb-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold">SATYAM</div>
+            <div class="space-x-4" id="nav-links">
+                <a href="#" onclick="showSection('home')" class="neubrutalism px-4 py-2 bg-blue-300 inline-block">Home</a>
+                <a href="#" onclick="showSection('services')" class="neubrutalism px-4 py-2 bg-green-300 inline-block">Services</a>
+                <a href="#" onclick="showSection('pricing')" class="neubrutalism px-4 py-2 bg-yellow-300 inline-block">Pricing</a>
+                <!-- <a href="#" onclick="showSection('login')" class="neubrutalism px-4 py-2 bg-pink-300 inline-block">Register</a> -->
+                <span id="user-info"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4">
+        <!-- Home Section -->
+        <section id="home" class="mb-8">
+            <div class="neubrutalism bg-white p-8 mb-8">
+                <h1 class="text-4xl font-bold mb-4">Detect Fake News with AI</h1>
+                <p class="text-xl">Stay informed with our cutting-edge fake news detection technology.</p>
+                <p class="mt-4">Our model analyzes articles and news sources to provide accurate assessments on their authenticity, ultimately helping to combat misinformation in society.</p>
+                <button onclick="showSection('register')" class="neubrutalism mt-4 px-6 py-3 bg-blue-400 text-black font-bold">Get Started</button>
+            </div>
+        </section>
+
+        <!-- Login Section -->
+        <section id="login" class="hidden">
+            <div class="max-w-md mx-auto neubrutalism bg-white p-8">
+                <h2 class="text-2xl font-bold mb-4">Login</h2>
+                <form id="loginForm" class="space-y-4">
+                    <input type="email" id="loginEmail" placeholder="Email" class="w-full p-2 neubrutalism" required>
+                    <input type="password" id="loginPassword" placeholder="Password" class="w-full p-2 neubrutalism" required>
+                    <button type="submit" class="w-full neubrutalism bg-green-300 p-2">Login</button>
+                </form>
+                <p id="loginMessage"></p>
+            </div>
+        </section>
+
+        <!-- Register Section -->
+        <section id="register" class="hidden">
+            <div class="max-w-md mx-auto neubrutalism bg-white p-8">
+                <h2 class="text-2xl font-bold mb-4">Register</h2>
+                <form id="registerForm" class="space-y-4">
+                    <input type="text" id="name" placeholder="Full Name" class="w-full p-2 neubrutalism" required>
+                    <input type="email" id="email" placeholder="Email" class="w-full p-2 neubrutalism" required>
+                    <input type="password" id="password" placeholder="Password" class="w-full p-2 neubrutalism" required>
+                    <button type="submit" class="w-full neubrutalism bg-blue-300 p-2">Register</button>
+                </form>
+                <p id="registerMessage"></p>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="hidden">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="neubrutalism bg-white p-8">
+                    <h3 class="text-2xl font-bold mb-4">Fake News Detection</h3>
+                    <p>Upload articles, URLs, or text to detect fake news instantly.</p>
+                    <button onclick="showSection('detector')" class="neubrutalism mt-4 px-4 py-2 bg-purple-300">Try Now</button>
+                </div>
+                <div class="neubrutalism bg-white p-8">
+                    <h3 class="text-2xl font-bold mb-4">Real-time News Check</h3>
+                    <p>Monitor news sources in real-time for authenticity.</p>
+                    <button onclick="window.location.href='/FakeNews';" class="neubrutalism mt-4 px-4 py-2 bg-orange-300">
+                        Try Now
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="hidden">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="neubrutalism bg-white p-8">
+                    <h3 class="text-2xl font-bold mb-4">Basic Plan</h3>
+                    <p class="text-3xl font-bold mb-4">$9.99/month</p>
+                    <ul class="list-disc pl-5 mb-4">
+                        <li>10 checks per day</li>
+                        <li>Basic analysis</li>
+                        <li>Email support</li>
+                    </ul>
+                    <button onclick="subscribe('basic')" class="neubrutalism w-full py-2 bg-green-300">Choose Basic</button>
+                </div>
+                <div class="neubrutalism bg-white p-8">
+                    <h3 class="text-2xl font-bold mb-4">Pro Plan</h3>
+                    <p class="text-3xl font-bold mb-4">$19.99/month</p>
+                    <ul class="list-disc pl-5 mb-4">
+                        <li>Unlimited checks</li>
+                        <li>Advanced analysis</li>
+                        <li>24/7 support</li>
+                        <li>API access</li>
+                    </ul>
+                    <button onclick="subscribe('pro')" class="neubrutalism w-full py-2 bg-blue-300">Choose Pro</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detector Section -->
+        <!-- Detector Section -->
+        <section id="detector" class="hidden">
+            <div class="neubrutalism bg-white p-8">
+                <h2 class="text-2xl font-bold mb-4">Check News</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <form id="newsForm" class="space-y-4">
+                            <textarea id="newsText" class="w-full p-2 neubrutalism" placeholder="Enter news text..." required></textarea>
+                            <input type="file" id="newsImage" accept="image/*" class="w-full p-2 neubrutalism">
+                            <input type="file" id="newsVideo" accept="video/*" class="w-full p-2 neubrutalism">
+                            <button type="submit" class="w-full neubrutalism bg-green-300 p-2">Check News</button>
+                        </form>
+                        <p id="result" class="text-xl mt-4 font-bold"></p>
+                    </div>
+                    <div>
+                        <canvas id="accuracy-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="hidden">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="neubrutalism bg-white p-8">
+                    <h3 class="text-2xl font-bold mb-4">Profile</h3>
+                    <div class="neubrutalism bg-white p-8">
+                        <h3 class="text-2xl font-bold mb-4">Profile</h3>
+                        <p><strong>Name:</strong> <span id="profile-name"></span></p>
+                        <p><strong>Username:</strong> <span id="profile-name"></span></p>
+                        <p><strong>email:</strong> <span id="profile-email"></span></p>
+                    </div>
+                </div>
+                <div class="neubrutalism bg-white p-8">
+                    <h3 class="text-2xl font-bold mb-4">Recent Checks</h3>
+                    <div id="recent-checks" class="space-y-2">
+                        <!-- News Checks will be added here dynamically -->
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 bg-white neubrutalism p-8">
+        <div class="container mx-auto grid md:grid-cols-3 gap-8">
+            <div>
+                <h4 class="font-bold mb-2">SATYAM</h4>
+                <p>Fighting misinformation with AI</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-2">Quick Links</h4>
+                <ul>
+                    <li><a href="#" onclick="showSection('home')">Home</a></li>
+                    <li><a href="#" onclick="showSection('services')">Services</a></li>
+                    <li><a href="#" onclick="showSection('pricing')">Pricing</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-2">Contact</h4>
+                <p>Email: support@satyam.com
+        </div>
+    </footer>
+
+    <script>
+        // Show/Hide Sections
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Initialize Chart
+        const ctx = document.getElementById('accuracy-chart');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Real', 'Fake'],
+                datasets: [{
+                    data: [75, 25],
+                    backgroundColor: ['#86efac', '#fca5a5']
+                }]
+            }
+        });
+
+        // Handle Login
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+    
+            let formData = new URLSearchParams();
+            formData.append("email", document.getElementById("loginEmail").value);
+            formData.append("password", document.getElementById("loginPassword").value);
+
+            fetch("/login", {
+                method: "POST",
+                body: formData,
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("loginMessage").innerText = data.message || data.error;
+                if (data.name) {
+                    localStorage.setItem("username", data.name);
+                    showSection("dashboard");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+
+        // Handle Register
+        document.getElementById("registerForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+    
+            let formData = new URLSearchParams();
+            formData.append("name", document.getElementById("name").value);
+            formData.append("email", document.getElementById("email").value);
+            formData.append("password", document.getElementById("password").value);
+
+            fetch("/register", {
+                method: "POST",
+                body: formData,
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("registerMessage").innerText = data.message || data.error;
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+
+        
+        //handle dashboard
+        fetch("/profile")
+            .then(response => response.json())
+            .then(data => {
+                if (data.name && data.email) {
+                    document.getElementById("profile-name").innerText = data.name;
+                    document.getElementById("profile-email").innerText = data.email;
+                }
+            })
+            .catch(error => console.error("Error fetching profile:", error));
+
+        
+        
+        // Handle News Check
+        function checkNews(event) {
+            event.preventDefault();
+            const loadingSpinner = document.getElementById('loading-spinner');
+            loadingSpinner.classList.remove('hidden');
+            loadingSpinner.classList.add('loading');
+
+            setTimeout(() => {
+                loadingSpinner.classList.add('hidden');
+                loadingSpinner.classList.remove('loading');
+
+                // Add to recent checks
+                const recentChecks = document.getElementById('recent-checks');
+                const newCheck = document.createElement('div');
+                newCheck.className = 'neubrutalism p-2 bg-gray-100';
+                newCheck.innerHTML = `
+                    <p><strong>Article:</strong> Sample News Title</p>
+                    <p><strong>Result:</strong> <span class="text-green-600">75% Real</span></p>
+                `;
+                recentChecks.prepend(newCheck);
+            }, 2000);
+        }
+
+        // Handle Subscription
+        function subscribe(plan) {
+            showSection('dashboard');
+            alert(`Successfully subscribed to ${plan} plan!`);
+        }
+
+        // Handle Logout
+        function logout() {
+            fetch("/logout", { method: "POST" })
+            .then(() => {
+                localStorage.removeItem("username");
+                updateNavbar();
+                showSection('home');
+            })
+            .catch(error => console.error("Error logging out:", error));
+        }
+
+
+        // Show home section by default
+        showSection('home');
+    
+    
+        // updtaed later
+        document.getElementById("newsForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let formData = new FormData();
+            let textInput = document.getElementById("newsText").value.trim();
+            let imageFile = document.getElementById("newsImage").files[0];
+            let videoFile = document.getElementById("newsVideo").files[0];
+
+            if (!textInput && !imageFile && !videoFile) {
+                document.getElementById("result").innerText = "Error: Please provide text, an image, or a video.";
+                return;
+            }
+
+            if (textInput) formData.append("news_text", textInput);
+            if (imageFile) formData.append("news_image", imageFile);
+            if (videoFile) formData.append("news_video", videoFile);
+
+            fetch("/check_news", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerText = `Result: ${data.result} (Confidence: ${data.confidence.toFixed(2)}%)`;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("result").innerText = "Error processing request.";
+            });
+        });
+
+
+        function updateNavbar() {
+            fetch("/profile")
+            .then(response => response.json())
+            .then(data => {
+                let navLinks = document.getElementById("user-info");
+                if (data.name) {
+                    localStorage.setItem("username", data.name);
+                    localStorage.setItem("email", data.email);
+                    navLinks.innerHTML = `
+                        <a href="#" onclick="showSection('dashboard')" class="neubrutalism px-4 py-2 bg-purple-300 inline-block">My Account</a>
+                        <a href="#" onclick="logout()" class="neubrutalism px-4 py-2 bg-red-300 inline-block">Logout</a>
+                    `;
+                } else {
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("email");
+                    navLinks.innerHTML = `
+                        <a href="#" onclick="showSection('login')" class="neubrutalism px-4 py-2 bg-pink-300 inline-block">Login</a>
+                    `;
+                }
+            }).catch(error => console.error("Error fetching profile:", error));
+        }
+
+        function logout() {
+            fetch("/logout", { method: "POST" })
+            .then(() => {
+                localStorage.removeItem("username");
+                localStorage.removeItem("email");
+                updateNavbar();
+                showSection('home');
+            })
+            .catch(error => console.error("Error logging out:", error));
+        }
+
+
+        // Ensure navbar updates on page load
+        updateNavbar();
+
+        function fetchRecentChecks() {
+    fetch("/recent_checks")
+    .then(response => response.json())
+    .then(data => {
+        let recentChecksDiv = document.getElementById("recent-checks");
+        recentChecksDiv.innerHTML = ""; // Clear old history
+
+        if (data.length === 0) {
+            recentChecksDiv.innerHTML = "<p>No recent checks found.</p>";
+            return;
+        }
+
+        data.forEach(check => {
+            let checkDiv = document.createElement("div");
+            checkDiv.className = "neubrutalism p-2 bg-gray-100";
+            checkDiv.innerHTML = `
+                <p><strong>Article:</strong> ${check.text}</p>
+                <p><strong>Result:</strong> <span class="text-${check.result === 'REAL' ? 'green' : 'red'}-600">${check.result} (${check.confidence}%)</span></p>
+            `;
+            recentChecksDiv.appendChild(checkDiv);
+        });
+    })
+    .catch(error => console.error("Error fetching recent checks:", error));
+}
+
+// **Dashboard load झाल्यावर हा function call कर**
+fetchRecentChecks();
+
+
+    </script>
+</body>
+</html>

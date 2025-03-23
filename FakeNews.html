@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Search App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .news-item {
+            background: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .news-item a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔎 News Search</h1>
+        <input type="text" id="searchBox" placeholder="Enter news topic...">
+        <button onclick="fetchNews()">Search</button>
+        <div id="newsResults"></div>
+    </div>
+
+    <script>
+        const API_KEY = "6fa33d590fe2cff9e3442e1559164dbf"; // तुमची GNews API Key
+
+        async function fetchNews() {
+            const query = document.getElementById("searchBox").value;
+            if (!query) {
+                alert("Please enter a news topic!");
+                return;
+            }
+
+            const url = `https://gnews.io/api/v4/search?q=${query}&lang=en&token=${API_KEY}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            const newsContainer = document.getElementById("newsResults");
+            newsContainer.innerHTML = ""; // जुने डेटा क्लिअर करा
+
+            if (!data.articles || data.articles.length === 0) {
+                newsContainer.innerHTML = "<p>No news found.</p>";
+                return;
+            }
+
+            data.articles.forEach(article => {
+                const newsItem = document.createElement("div");
+                newsItem.classList.add("news-item");
+                newsItem.innerHTML = `
+                    <h2>${article.title}</h2>
+                    <p>${article.description}</p>
+                    <a href="${article.url}" target="_blank">Read More</a>
+                `;
+                newsContainer.appendChild(newsItem);
+            });
+        }
+    </script>
+</body>
+</html>
